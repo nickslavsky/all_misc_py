@@ -45,3 +45,15 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+Clock/main
+*.iml
+ch3/__pycache__/sketch.cpython-34.pyc
+UMCrawler/.idea/workspace.xml
+UMCrawler/.idea/modules.xml
+NumpySandbox/.idea/misc.xml
+Clock/.idea/workspace.xml
+NumpySandbox/.idea/modules.xml
+UMCrawler/.idea/misc.xml
+NumpySandbox/.idea/workspace.xml
+Clock/.idea/modules.xml
+*.iml
