@@ -9,7 +9,7 @@ gamma = 1
 delta = 1.5
 initial = [1, 0.05]
 t_max = 100
-tau = 0.01
+tau = 0.002
 
 def f(result):
     'compute the right part of the ODE - f()'
@@ -22,13 +22,14 @@ def sum_c_k(y, butcher):
     k[0] = f(y)
     if butcher[0] > 1:
         for i in range(1, butcher[0]):
-            t = y + tau * (k[:i].T.dot(butcher[1][:i]))
+            t = y + tau * butcher[2][i][:i].dot(k[:i])
             k[i] = f(np.reshape(t, 2))
     c = np.reshape(butcher[3], butcher[0])
     temp = k.T.dot(c)
     return temp
 
 def compute_explicit(butcher):
+    'returns results in form of N times t, y1, y2'
     y = np.array(initial)
     t = 0
     N = int(t_max/tau)
@@ -39,6 +40,9 @@ def compute_explicit(butcher):
         t += tau
         res[i] = [t, y[0], y[1]]
     return res
+
+def compute_ki(butcher, k_n, y_n):
+    return None
 
 def read_butcher(filename):
     with open(filename, 'rb') as fh:
@@ -56,7 +60,7 @@ def read_butcher(filename):
 
 if __name__ == '__main__':
     #filename = input('Type file name: ')
-    butcher = read_butcher(r'methods\third.dat')
+    butcher = read_butcher(r'methods\explicit-euler.dat')
     start = time.time()
     result = compute_explicit(butcher)
     np.savetxt('results.txt', result, fmt = '%.4f', delimiter = '\t', newline = '\r\n')
