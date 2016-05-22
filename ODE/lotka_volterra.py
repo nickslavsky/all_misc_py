@@ -1,4 +1,3 @@
-from collections import namedtuple
 import numpy as np
 import time
 from matplotlib import pyplot as plt
@@ -8,7 +7,7 @@ beta = 2
 gamma = 1
 delta = 1.5
 initial = [1, 0.05]
-t_max = 100
+t_max = 1000
 tau = 0.001
 
 def f(result):
@@ -49,8 +48,8 @@ def compute_k_nplus(butcher, k_n, y_n):
     while epsilon > butcher[4]:
         for i in range(butcher[0]):
             t = y_n + tau * butcher[2][i].dot(temp)
-            k_nplus[i] = f(np.reshape(t, 2))
-        epsilon = max(np.linalg.norm(temp-k_nplus, axis= 1))
+            k_nplus[i] = f(t)
+        epsilon = max(np.linalg.norm(temp-k_nplus, axis = 1))
         temp = k_nplus
     return k_nplus
 
