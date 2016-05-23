@@ -1,5 +1,6 @@
 import numpy as np
 import time
+import os
 from matplotlib import pyplot as plt
 
 alpha = 1
@@ -7,8 +8,8 @@ beta = 2
 gamma = 1
 delta = 1.5
 initial = [1, 0.05]
-t_max = 1000
-tau = 0.001
+t_max = 100
+tau = 0.02
 
 def f(result):
     'compute the right part of the ODE - f()'
@@ -63,9 +64,10 @@ def compute_implicit(butcher):
     k_n = np.tile(initial, (butcher[0], 1))
     c = np.reshape(butcher[3], butcher[0])
     for i in range(1, N + 1):
-        y += tau * k_n.T.dot(c)
+        temp = compute_k_nplus(butcher, k_n, y) #use current y and k_n to calc next k_n
+        y += tau * k_n.T.dot(c) #next y
         t += tau
-        k_n = compute_k_nplus(butcher, k_n, y)
+        k_n =  temp #will use it on the next step
         res[i] = [t, y[0], y[1]]
     return res
 
@@ -84,8 +86,15 @@ def read_butcher(filename):
 
 
 if __name__ == '__main__':
-    #filename = input('Type file name: ')
-    butcher = read_butcher(r'methods\implicit-euler.dat')
+    print('Methods available in methods folder:')
+    try:
+        for file in os.listdir(r'methods'):
+            if file.endswith(".dat"):
+                print(file)
+    except OSError as oserr:
+        print('IO Error: ' + str(oserr))
+    filename = input('Type file name: ')
+    butcher = read_butcher('methods\\' + filename)
     start = time.time()
     result = compute_implicit(butcher) if butcher[4] > 0 else compute_explicit(butcher)
     np.savetxt('results.txt', result, fmt = '%.4f', delimiter = '\t', newline = '\r\n')
