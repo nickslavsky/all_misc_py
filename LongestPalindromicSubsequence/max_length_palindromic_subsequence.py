@@ -35,9 +35,10 @@ def restore_palindrome(length_matrix, sequence):
     # traceback
     while substr_length > 0 and end > 1:
         start = end - substr_length
-        # if possible, go left
+        # add the arbitrary char from the middle
         if length_matrix[start][end] == 1:
             middle = sequence[start]
+        # if possible, go left
         if length_matrix[start][end] == (length_matrix[start][end - 1]):
             substr_length -= 1
             end -= 1
