@@ -1,7 +1,6 @@
 # A Dynamic Programming based Python program for LPS problem
 # Returns the length of the longest palindromic subsequence in seq
 import numpy as np
-from collections import deque
 
 
 def calc_subsequence_lengths(sequence):
@@ -26,8 +25,7 @@ def calc_subsequence_lengths(sequence):
 
 
 def restore_palindrome(length_matrix, sequence):
-    palindrome_left = deque()
-    palindrome_right = deque()
+    palindrome_left = ''
     middle = ''
     n, n = np.shape(length_matrix)
     # start in the north-eastern corner of the matrix
@@ -35,9 +33,6 @@ def restore_palindrome(length_matrix, sequence):
     # traceback
     while substr_length > 0 and end > 1:
         start = end - substr_length
-        # add the arbitrary char from the middle
-        if length_matrix[start][end] == 1:
-            middle = sequence[start]
         # if possible, go left
         if length_matrix[start][end] == (length_matrix[start][end - 1]):
             substr_length -= 1
@@ -47,15 +42,17 @@ def restore_palindrome(length_matrix, sequence):
             substr_length -= 1
         # both left and lower == current - 2, go south-west
         else:
-            palindrome_left.append(sequence[start])
-            palindrome_right.appendleft(sequence[start])
+            palindrome_left += sequence[start]
             substr_length -= 2
             end -= 1
-    result = ''.join(palindrome_left) + middle + ''.join(palindrome_right)
+    # add the arbitrary char from the middle
+    if length_matrix[start][end] == 1 and substr_length >= 0:
+        middle = sequence[start+1]
+    result = ''.join(palindrome_left) + middle + ''.join(palindrome_left[::-1])
     return result, int(length_matrix[0][n-1])
 
 if __name__ == '__main__':
-    seq = 'geeks for geeks'
+    seq = 'abcbcbb'
     matrix = calc_subsequence_lengths(seq)
     palindrome, length = restore_palindrome(matrix, seq)
     print('Longest palindromic subsequence is \'{0}\' of length {1}'.format(palindrome, length))
